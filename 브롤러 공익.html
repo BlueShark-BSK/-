@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나는 브롤러의 종류를 100가지 이상 알고 있다</title>
+<style>
+body{background-image:url("https://raw.githubusercontent.com/nyar44/brawl-character-quiz/main/images/background.jpg");background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;margin:8px}
+h1{text-align:center;font-family:Impact,"Arial Black",sans-serif;font-size:48px;letter-spacing:2px;font-weight:900;color:#ffffff;text-shadow:3px 3px 6px rgba(0,0,0,0.8)}
+/* 제목 흰색 및 크기 확대, 상단 여백 추가 */
+.title{width:100%;text-align:center!important;margin:80px 0 20px;font-family:Impact,"Arial Black",sans-serif;font-size:48px;font-weight:900;color:#ffffff;text-shadow:3px 3px 6px rgba(0,0,0,0.8)}
+.game-bar{display:flex;align-items:center;justify-content:center;gap:12px;width:fit-content;margin:20px auto;padding:12px 16px;background:white;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.15);position:relative}
+#answer{width:300px;height:45px;font-size:20px;padding:0 12px;border:2px solid #333;border-radius:5px}
+button{height:49px;font-size:18px;padding:0 20px;cursor:pointer}
+.game-info{font-size:18px;font-weight:bold;padding:0 10px;white-space:nowrap}
+.character-grid{display:grid;grid-template-columns:repeat(15,65px);gap:6px;justify-content:center;margin:20px auto}
+.character{width:65px;height:80px;overflow:hidden;box-sizing:border-box;background-clip:padding-box;position:relative}
+.character img{width:100%;height:100%;object-fit:cover;display:block}
+.character.answered{display:flex;flex-direction:column}
+.character.answered img{width:100%;height:60px;object-fit:cover;flex-shrink:0}
+.character.answered .character-name{display:block;height:15px;line-height:15px;text-align:center;background:rgba(0,0,0,.8);color:#fff;font-size:9px;font-weight:bold}
+.number{position:absolute;top:3px;left:5px;z-index:2;font-size:12px;font-weight:bold;color:white;text-shadow:1px 1px 3px black}
+.character.starter{border:3px solid #9e9e9e}.character.rare{border:3px solid #32cd32}.character.superrare{border:3px solid #00aaff}.character.epic{border:3px solid #b84cff}.character.mythic{border:3px solid #ff3b3b}.character.legendary{border:3px solid #ffd700}.character.ultralegendary{border:3px solid #ff69d4}
+#giveUpButton{background:#8b0000;color:#fff;font-weight:bold;border:2px solid #5a0000;border-radius:8px}
+#giveUpButton:hover{background:#a50000}
+#clearMessage,#giveUpMessage{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:white;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35);box-sizing:border-box}
+#clearMessage{width:420px;max-width:calc(100vw - 40px);border:4px solid black;border-radius:20px;padding:28px 32px;font-size:38px}
+#giveUpMessage{border:5px solid black;border-radius:20px;padding:35px 60px;font-size:32px;font-weight:bold}
+#clearCount{font-size:38px;font-weight:bold;margin-bottom:-18px}
+.clearTimeRow{margin-top:18px}.clearComment{font-size:16px;font-weight:bold;margin:18px 0 22px}.giveUpComment{font-size:18px;font-weight:bold;margin:12px 0 18px}
+#clearTime{color:#20b84b;font-size:32px;font-weight:bold;display:inline-block;transform:translateY(5px)}
+#giveUpTitle{font-size:42px;color:#d60000;margin-bottom:15px}
+.clearButtons{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:25px}
+.clearButtons button{font-size:14px;font-weight:bold;padding:10px 25px;border:2px solid black;border-radius:10px;line-height:1}
+.clearButtons button:first-child{background:#e53935;color:white}.clearButtons button:last-child{background:#28a745;color:white}
+.shareXButton{background:#000!important;color:#fff!important;border:2px solid #000!important}
+.shareXButton:hover{background:#222!important}
+.sound-setting{position:absolute;top:15px;right:15px;z-index:9999;display:flex;flex-direction:column;align-items:center;gap:2px}
+.sound-title{font-size:16px;font-weight:900;color:#d9ff00;line-height:1;white-space:nowrap}
+.sound-toggle{display:flex}.sound-btn{width:38px;height:24px;padding:0;border:1px solid #222;background:#555;color:#fff;font-size:11px;font-weight:bold;line-height:24px}
+#soundOnBtn{border-radius:6px 0 0 6px}#soundOffBtn{border-radius:0 6px 6px 0}#soundOnBtn.active{background:#00c91a}#soundOffBtn.active{background:#d91f1f}
+.disclaimer{margin-top:30px;padding:15px;text-align:center;font-size:12px;color:#fff;text-shadow:1px 1px 2px #000}
+@media(max-width:768px){
+body{margin:0;width:100%;overflow-x:hidden}
+.title{font-size:26px!important;margin:40px 0 10px!important;white-space:nowrap}
+.game-bar{width:calc(100% - 12px);margin:0 auto 8px;padding:5px 6px;box-sizing:border-box;gap:4px;border-radius:10px}
+#answer{width:34%;min-width:0;height:32px;padding:3px 6px;box-sizing:border-box;font-size:16px}
+.game-bar button{height:32px;padding:3px 7px;font-size:10px;line-height:1;white-space:nowrap}#giveUpButton{padding:3px 7px;font-size:10px}
+.game-info{padding:0 2px;font-size:9px}.character-grid{grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;width:100vw;margin:5px 0;padding:0;justify-content:start}
+.character{width:100%;height:auto;aspect-ratio:70/76}.character:not(.answered) img{width:100%;height:100%;object-fit:fill}
+.character.answered{display:grid;grid-template-rows:minmax(0,1fr) 10px}.character.answered img{width:100%;height:100%;min-height:0;object-fit:cover}.character.answered .character-name{width:100%;height:10px;line-height:10px;font-size:6px;color:white;background:#000;white-space:nowrap;overflow:hidden;box-sizing:border-box}
+.number{top:2px;left:2px;font-size:7px;line-height:1}.sound-setting{position:fixed;right:10px;bottom:15px;top:auto}.sound-title{font-size:8px;line-height:8px}.sound-btn{width:23px;height:16px;font-size:8px;line-height:14px}
+#clearMessage,#giveUpMessage{width:calc(100% - 40px);max-width:420px;padding:24px 18px}#clearCount{font-size:26px}#clearMessage,#giveUpMessage{font-size:24px}.clearComment{font-size:11px}.clearButtons{gap:8px;flex-wrap:nowrap}.clearButtons button{font-size:10px;padding:8px 12px}.disclaimer{font-size:10px;padding:10px 16px;margin-top:20px;line-height:1.5}
+}
+</style>
+</head>
+<body>
+<h1 class="title">나는 브롤러의 종류를 100가지 이상 알고 있다</h1>
+<div class="game-bar">
+<input id="answer" placeholder="브롤러 이름을 입력">
+<button onclick="checkAnswer()">정답</button>
+<button id="giveUpButton" onclick="confirmGiveUp()">포기</button>
+<div class="game-info">⏱ <span id="timer">00:00</span></div>
+<div class="game-info">브롤러 수: <span id="count">0</span> / 108 &nbsp;&nbsp;&nbsp; 남은 브롤러: <span id="remaining">108</span>명</div>
+</div>
+<div class="character-grid" id="characterGrid"></div>
+
+<div id="clearMessage" style="display:none;">
+<div id="clearCount">108 / 108</div>
+<div class="clearTimeRow">클리어 시간: <span id="clearTime">00:00</span></div>
+<div class="clearComment" id="clearComment">브롤러 지식만큼은 프로급</div>
+<div class="clearButtons"><button onclick="closeClear()">닫기</button><button class="shareXButton" onclick="shareToX()">X에 공유</button><button onclick="restartGame()">다시 하기</button></div>
+</div>
+
+<div id="giveUpMessage" style="display:none;">
+<div id="giveUpTitle">포기</div>
+<div id="giveUpScore">정답 수: <span id="giveUpCount">0</span> / 108</div>
+<div>시간: <span id="giveUpTime">00:00</span></div>
+<div id="giveUpComment" class="giveUpComment">다음에는 더 많이 맞혀보자!</div>
+<div class="clearButtons"><button onclick="closeGiveUp()">닫기</button><button class="shareXButton" onclick="shareToX()">X에 공유</button><button onclick="restartGame()">다시 하기</button></div>
+</div>
+
+<div class="sound-setting"><div class="sound-title">효과음</div><div class="sound-toggle"><button type="button" id="soundOnBtn" class="sound-btn active">켜기</button><button type="button" id="soundOffBtn" class="sound-btn">끄기</button></div></div>
+
+<footer class="disclaimer">※ 이 콘텐츠는 비공식이며 Supercell의 승인을 받지 않았습니다.<br>팬 콘텐츠에 관한 자세한 내용은 Supercell의 팬 콘텐츠 정책을 확인해 주세요.</footer>
+
+<script>
+const BASE="https://raw.githubusercontent.com/nyar44/brawl-character-quiz/main/";
+const names=[
+["쉘리","shelly",["Shelly"]],["니타","nita",["Nita"]],["콜트","colt",["Colt"]],["불","bull",["Bull"]],["브록","brock",["Brock"]],["엘 프리모","elprimo",["El Primo","엘프리모"]],["발리","barley",["Barley"]],["포코","poco",["Poco"]],["로사","rosa",["Rosa"]],["제시","jessie",["Jessie"]],["다이너마이크","dynamike",["Dynamike","다이너마이크"]],["틱","tick",["Tick"]],["8비트","8bit",["8-BIT","에이트비트","8 비트"]],["리코","rico",["Rico"]],["대릴","darryl",["Darryl"]],["페니","penny",["Penny"]],["칼","carl",["Carl"]],["재키","jacky",["Jacky"]],["거스","gus",["Gus"]],["보","bo",["Bo"]],["엠즈","emz",["EMZ","이엠즈"]],["스튜","stu",["Stu"]],["파이퍼","piper",["Piper"]],["팸","pam",["Pam"]],["프랭크","frank",["Frank"]],["비비","bibi",["Bibi"]],["비","bea",["Bea"]],["나니","nani",["Nani"]],["에드거","edgar",["Edgar"]],["그리프","griff",["Griff"]],["그롬","grom",["Grom"]],["보니","bonnie",["Bonnie"]],["게일","gale",["Gale"]],["콜레트","colette",["Colette"]],["벨","belle",["Belle"]],["애쉬","ash",["Ash"]],["롤라","lola",["Lola"]],["샘","sam",["Sam"]],["맨디","mandy",["Mandy"]],["메이지","maisie",["Maisie"]],["행크","hank",["Hank"]],["펄","pearl",["Pearl"]],["래리 & 로리","larrylawrie",["Larry & Lawrie","래리앤로리","래리 & 로리"]],["안젤로","angelo",["Angelo"]],["베리","berry",["Berry"]],["셰이드","shade",["Shade"]],["미플","meeple",["Meeple"]],["트렁크","trunk",["Trunk"]],["볼트","bolt",["Bolt"]],["모티스","mortis",["Mortis"]],["타라","tara",["Tara"]],["진","gene",["Gene"]],["맥스","max",["Max","MAX"]],["미스터 P","mrp",["Mr. P","Mr P","미스터피"]],["스프라우트","sprout",["Sprout"]],["바이런","byron",["Byron"]],["스퀴크","squeak",["Squeak"]],["루","lou",["Lou"]],["러프스","ruffs",["Ruffs"]],["버즈","buzz",["Buzz"]],["팽","fang",["Fang"]],["이브","eve",["Eve"]],["자넷","janet",["Janet"]],["오티스","otis",["Otis"]],["버스터","buster",["Buster"]],["그레이","gray",["Gray"]],["R-T","rt",["R-T","알티"]],["윌로우","willow",["Willow"]],["더그","doug",["Doug"]],["척","chuck",["Chuck"]],["찰리","charlie",["Charlie"]],["미코","mico",["Mico"]],["멜로디","melodie",["Melodie"]],["릴리","lily",["Lily"]],["클랜시","clancy",["Clancy"]],["모","moe",["Moe"]],["주주","juju",["Juju"]],["올리","ollie",["Ollie"]],["루미","lumi",["Lumi"]],["핑크스","finx",["Finx"]],["재용","jaeyong",["Jaeyong"]],["알리","alli",["Alli"]],["미나","mina",["Mina"]],["지기","ziggy",["Ziggy"]],["지지","gigi",["Gigi"]],["나지아","najia",["Najia"]],["글로이","glowy",["Glowy"]],["스타 노바","starrnova",["Starr Nova","StarrNova"]],["데미안","damian",["Damian"]],["웬디","wendy",["Wendy"]],["코스모","cosmo",["Cosmo"]],["빈스","vince",["Vince"]],["스파이크","spike",["Spike"]],["크로우","crow",["Crow"]],["레온","leon",["Leon"]],["샌디","sandy",["Sandy"]],["앰버","amber",["Amber"]],["메그","meg",["Meg"]],["서지","surge",["Surge"]],["체스터","chester",["Chester"]],["코델리우스","cordelius",["Cordelius"]],["키트","kit",["Kit"]],["드라코","draco",["Draco"]],["켄지","kenji",["Kenji"]],["노리","nori",["Nori"]],["피어스","pierce",["Pierce"]],["카제","kaze",["Kaze"]],["시리우스","sirius",["Sirius"]]
+];
+const characters={}; names.forEach((x,i)=>characters[x[0]]={number:i+1,id:x[1],image:`${BASE}images/${x[1]}.jpg`,aliases:x[2]});
+
+// 이미지 미리 로드하여 입력 즉시 전환되도록 개선
+names.forEach(x => { const img = new Image(); img.src = `${BASE}images/${x[1]}.jpg`; });
+
+const grid=document.getElementById("characterGrid");
+for(let i=1;i<=108;i++){const c=document.createElement("div");c.className="character";c.dataset.number=i;
+if(i===1)c.classList.add("starter");else if(i<=9)c.classList.add("rare");else if(i<=19)c.classList.add("superrare");else if(i<=49)c.classList.add("epic");else if(i<=92)c.classList.add("mythic");else if(i<=106)c.classList.add("legendary");else c.classList.add("ultralegendary");
+c.innerHTML=`<span class="number">${String(i).padStart(3,"0")}</span><img src="${BASE}images/question.jpg.png">`;grid.appendChild(c);}
+let seconds=0,timerId=null,timerStarted=false,answered=[],soundEnabled=true;
+function startTimer(){if(timerStarted)return;timerStarted=true;timerId=setInterval(()=>{seconds++;document.getElementById("timer").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0")},1000)}
+function stopTimer(){clearInterval(timerId)}
+function norm(s){return s.trim().toLowerCase().replace(/\s+/g,"")}
+function checkAnswer(){const input=document.getElementById("answer"),name=norm(input.value);if(!name)return;
+const entry=Object.entries(characters).find(([key,d])=>norm(key)===name||d.aliases.some(a=>norm(a)===name));
+if(entry&&!answered.includes(entry[0])){input.value="";answered.push(entry[0]);if(answered.length===1)startTimer();document.getElementById("count").textContent=answered.length;document.getElementById("remaining").textContent=108-answered.length;
+if(soundEnabled)new Audio(BASE+"sounds/%E3%83%94%E3%83%83%E3%82%AF%E9%9F%B3.mp3").play().catch(()=>{});
+const ch=entry[1],box=document.querySelector(`.character[data-number="${ch.number}"]`);if(box){box.classList.add("answered");box.querySelector("img").src=ch.image;let label=box.querySelector(".character-name");if(!label){label=document.createElement("div");label.className="character-name";box.appendChild(label)}label.textContent=entry[0]}
+if(answered.length===108){stopTimer();document.getElementById("clearTime").textContent=document.getElementById("timer").textContent;document.getElementById("clearMessage").style.display="block"}}
+else if(entry&&answered.includes(entry[0])){input.value="";if(soundEnabled)new Audio(BASE+"sounds/%E3%83%9F%E3%82%B9.mp3").play().catch(()=>{})}
+else{input.value="";if(soundEnabled)new Audio(BASE+"sounds/%E5%A4%B1%E6%95%97.mp3").play().catch(()=>{})}}
+document.getElementById("answer").addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
+function closeClear(){document.getElementById("clearMessage").style.display="none"}function restartGame(){location.reload()}
+function confirmGiveUp(){if(confirm("정말 포기하시겠습니까?"))giveUp()}
+function giveUp(){stopTimer();Object.entries(characters).forEach(([name,ch])=>{const box=document.querySelector(`.character[data-number="${ch.number}"]`);if(box){box.querySelector("img").src=ch.image;box.classList.add("answered");let label=box.querySelector(".character-name");if(!label){label=document.createElement("div");label.className="character-name";box.appendChild(label)}label.textContent=name;if(!answered.includes(name)){box.querySelector("img").style.filter="grayscale(100%)";box.querySelector("img").style.opacity=".55"}}});
+document.getElementById("answer").disabled=true;document.getElementById("giveUpButton").disabled=true;document.getElementById("giveUpCount").textContent=answered.length;document.getElementById("giveUpTime").textContent=document.getElementById("timer").textContent;
+const comments=["다음에는 더 많이 맞혀보자!","아쉽다! 조금만 더 해보자!","브롤러 지식이 조금 부족하군요!","여기서 포기하다니 아쉽네요!","한 번 더 도전해보세요!"];document.getElementById("giveUpComment").textContent=comments[Math.floor(Math.random()*comments.length)];document.getElementById("giveUpMessage").style.display="block"}
+function closeGiveUp(){document.getElementById("giveUpMessage").style.display="none"}
+function shareToX(){const text=`나는 브롤러의 종류를 100가지 이상 알고 있다\n${answered.length} / 108명 정답!\n시간: ${document.getElementById("timer").textContent}`;window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(text)," _blank")}
+document.getElementById("soundOnBtn").onclick=()=>{soundEnabled=true;updateSoundButtons()};document.getElementById("soundOffBtn").onclick=()=>{soundEnabled=false;updateSoundButtons()};
+function updateSoundButtons(){document.getElementById("soundOnBtn").classList.toggle("active",soundEnabled);document.getElementById("soundOffBtn").classList.toggle("active",!soundEnabled)}updateSoundButtons();
+</script>
+</body>
+</html>
